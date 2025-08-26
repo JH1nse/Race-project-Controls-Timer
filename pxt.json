@@ -5,7 +5,8 @@
         "core": "*",
         "radio": "*",
         "microphone": "*",
-        "pxt-cutebotpro": "github:elecfreaks/pxt-cutebot-pro#v2.1.2"
+        "pxt-cutebotpro": "github:elecfreaks/pxt-cutebot-pro#v2.1.2",
+        "radio-broadcast": "*"
     },
     "files": [
         "main.blocks",

@@ -1,56 +1,63 @@
+enum RadioMessage {
+    StartTijd = 340,
+    Finish = 5694,
+    rechtdoor = 12848,
+    Checkpoint1 = 25201,
+    links = 30556,
+    Checkpoint2 = 32327,
+    rechts = 39515,
+    achteruit = 43484,
+    vooruit = 44692,
+    message1 = 49434,
+    Checkpoint4 = 53120,
+    Start = 56380,
+    rem = 58635,
+    Checkpoint3 = 63779
+}
 input.onButtonPressed(Button.A, function () {
-    CutebotPro.fullAstern()
+    radio.sendMessage(RadioMessage.achteruit)
     basic.showArrow(ArrowNames.South)
 })
 input.onLogoEvent(TouchButtonEvent.Pressed, function () {
-    serial.writeLine("Checkpoint Test: " + ("behaald in " + Min + " minuten en " + ("" + Sec + " seconden.")))
-    if (Sec <= 3) {
-        serial.writeLine("Valsspeler.")
-        Min = 9999999
-    }
+    radio.sendMessage(RadioMessage.rechtdoor)
+})
+input.onGesture(Gesture.TiltRight, function () {
+    radio.sendMessage(RadioMessage.rechts)
+    basic.showArrow(ArrowNames.East)
+})
+input.onButtonPressed(Button.AB, function () {
+    radio.sendMessage(RadioMessage.rem)
+    basic.showLeds(`
+        . . . . .
+        . . . . .
+        . # # # .
+        . . . . .
+        . . . . .
+        `)
 })
 input.onButtonPressed(Button.B, function () {
-    CutebotPro.fullSpeedAhead()
+    radio.sendMessage(RadioMessage.vooruit)
     basic.showArrow(ArrowNames.North)
 })
-let Sec = 0
+input.onGesture(Gesture.TiltLeft, function () {
+    radio.sendMessage(RadioMessage.links)
+    basic.showArrow(ArrowNames.West)
+})
+radio.onReceivedMessage(RadioMessage.StartTijd, function () {
+    while (true) {
+        serial.writeValue("Secondes", Sec)
+        serial.writeValue("Minuten", Min)
+        basic.pause(1000)
+        Sec += 1
+    }
+})
 let Min = 0
-Min = 0
-Sec = 0
-CutebotPro.colorLight(CutebotProRGBLight.RGBA, 0xffffff)
-basic.forever(function () {
-    serial.writeValue("Secondes", Sec)
-    serial.writeValue("Minuten", Min)
-    basic.pause(1000)
-})
-basic.forever(function () {
-    basic.pause(1000)
-    Sec += 1
-})
+let Sec = 0
+radio.setTransmitPower(7)
+radio.setGroup(35)
 basic.forever(function () {
     if (Sec == 60) {
         Sec = 0
         Min += 1
-    }
-})
-basic.forever(function () {
-    if (input.isGesture(Gesture.TiltLeft)) {
-        CutebotPro.pwmCruiseControl(50, 100)
-        basic.showArrow(ArrowNames.West)
-    } else if (input.isGesture(Gesture.TiltRight)) {
-        CutebotPro.pwmCruiseControl(100, 50)
-        basic.showArrow(ArrowNames.East)
-    } else if (input.isGesture(Gesture.LogoUp)) {
-        CutebotPro.pwmCruiseControl(100, 100)
-        basic.showArrow(ArrowNames.North)
-    } else {
-        CutebotPro.pwmCruiseControl(100, 100)
-        basic.showLeds(`
-            # . . . #
-            . # . # .
-            . . # . .
-            . # . # .
-            # . . . #
-            `)
     }
 })
