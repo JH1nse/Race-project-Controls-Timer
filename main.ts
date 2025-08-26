@@ -44,7 +44,7 @@ input.onGesture(Gesture.TiltLeft, function () {
     basic.showArrow(ArrowNames.West)
 })
 radio.onReceivedMessage(RadioMessage.StartTijd, function () {
-    while (true) {
+    for (let index = 0; index < 9999999999; index++) {
         serial.writeValue("Secondes", Sec)
         serial.writeValue("Minuten", Min)
         basic.pause(1000)
