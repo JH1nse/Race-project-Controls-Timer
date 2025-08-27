@@ -1,7 +1,10 @@
 enum RadioMessage {
     StartTijd = 340,
     Finish = 5694,
+    Checkpoint3Behaald = 11045,
     rechtdoor = 12848,
+    Checkpoint4Behaald = 14638,
+    Checkpoint2Behaald = 24361,
     Checkpoint1 = 25201,
     links = 30556,
     Checkpoint2 = 32327,
@@ -11,13 +14,18 @@ enum RadioMessage {
     message1 = 49434,
     Checkpoint4 = 53120,
     Start = 56380,
+    Checkpoint1Behaald = 56413,
     rem = 58635,
     Checkpoint3 = 63779
 }
+/**
+ * de controls met wat het doet en met een pijl die de actie weergeeft.
+ */
 input.onButtonPressed(Button.A, function () {
     radio.sendMessage(RadioMessage.achteruit)
     basic.showArrow(ArrowNames.South)
 })
+// toeter
 input.onLogoEvent(TouchButtonEvent.Pressed, function () {
     radio.sendMessage(RadioMessage.rechtdoor)
 })
@@ -43,21 +51,6 @@ input.onGesture(Gesture.TiltLeft, function () {
     radio.sendMessage(RadioMessage.links)
     basic.showArrow(ArrowNames.West)
 })
-radio.onReceivedMessage(RadioMessage.StartTijd, function () {
-    for (let index = 0; index < 9999999999; index++) {
-        serial.writeValue("Secondes", Sec)
-        serial.writeValue("Minuten", Min)
-        basic.pause(1000)
-        Sec += 1
-    }
-})
-let Min = 0
-let Sec = 0
+// radio configureren
 radio.setTransmitPower(7)
 radio.setGroup(35)
-basic.forever(function () {
-    if (Sec == 60) {
-        Sec = 0
-        Min += 1
-    }
-})
